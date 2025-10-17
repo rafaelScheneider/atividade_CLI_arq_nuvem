@@ -57,7 +57,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/my-key.pem
-          chmod 600 ~/.ssh/my-key.pem
+          chmod 600 ~/.ssh/lab07.pem
 
 
       # --- Configurar EC2 com Ansible ---
