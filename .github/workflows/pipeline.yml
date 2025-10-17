@@ -59,7 +59,7 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/lab07.pem
-          chmod 600 ~/.ssh/my-key.pem
+          chmod 600 ~/.ssh/lab07.pem
           echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
 
       - name: Rodar Ansible Playbook
