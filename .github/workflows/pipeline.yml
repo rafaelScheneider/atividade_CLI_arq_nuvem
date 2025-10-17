@@ -56,7 +56,7 @@ jobs:
       - name: Criar chave privada para acesso à EC2
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/my-key.pem
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/lab07.pem
           chmod 600 ~/.ssh/lab07.pem
 
 
