@@ -53,6 +53,13 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y ansible
 
+      - name: Criar chave privada para acesso à EC2
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/my-key.pem
+          chmod 600 ~/.ssh/my-key.pem
+
+
       # --- Configurar EC2 com Ansible ---
       - name: Executar playbook Ansible
         run: |
