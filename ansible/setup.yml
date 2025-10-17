@@ -1,18 +1,21 @@
- hosts: ec2
- become: yes
- tasks:
- - name: Instalar pacotes básicos
- yum:
- name: [python3, python3-pip]
- state: present
- - name: Instalar bibliotecas Python
- pip:
- name: [boto3, pandas]
- - name: Criar diretórios de dados
- file:
- path: "/data/{{ item }}"
- state: directory
- loop:
- - raw
- - trusted
- - client
+---
+- hosts: ec2
+  become: yes
+  tasks:
+    - name: Instalar pacotes básicos
+      yum:
+        name: [python3, python3-pip]
+        state: present
+
+    - name: Instalar bibliotecas Python
+      pip:
+        name: [boto3, pandas]
+
+    - name: Criar diretórios de dados
+      file:
+        path: "/data/{{ item }}"
+        state: directory
+      loop:
+        - raw
+        - trusted
+        - client
