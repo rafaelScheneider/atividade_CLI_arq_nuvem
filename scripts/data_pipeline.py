@@ -60,8 +60,8 @@ def upload_to_s3(file_path, s3_key):
     print(f"☁️  Uploaded to s3://{bucket_name}/{s3_key}")
 
 # Upload
-upload_to_s3(arquivo_entrada, f"raw/{arquivo_entrada}")
-upload_to_s3(arquivo_saida_tratado, f"trusted/{arquivo_saida_tratado}")
-upload_to_s3(arquivo_saida_cliente, f"client/{arquivo_saida_cliente}")
+upload_to_s3(arquivo_entrada, f"raw/{os.path.basename(arquivo_entrada)}")
+upload_to_s3(arquivo_saida_tratado, f"trusted/{os.path.basename(arquivo_saida_tratado)}")
+upload_to_s3(arquivo_saida_cliente, f"client/{os.path.basename(arquivo_saida_cliente)}")
 
 print("Pipeline de dados concluído")
