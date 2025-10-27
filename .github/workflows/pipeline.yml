@@ -27,6 +27,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
+      
+      # --- Validar SSH para EC2 ---
+      - name: Validar SSH para EC2
+        run: ssh -i ~/.ssh/jonas.pem -o StrictHostKeyChecking=no ubuntu@3.89.255.178 "echo SSH OK"
 
       # --- Instalar Terraform ---
       - name: Instalar Terraform
