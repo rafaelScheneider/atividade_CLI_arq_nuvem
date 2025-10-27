@@ -14,7 +14,8 @@ bucket_name = sys.argv[1]
 s3 = boto3.client("s3")
 
 #raw data
-arquivo_entrada = "data/dados_pacientes.csv"
+repo_root = "/home/ubuntu/atividade_CLI_arq_nuvem"
+arquivo_entrada = os.path.join(repo_root, "data", "dados_pacientes.csv")
 arquivo_saida_tratado = "data/dados_pacientes_tratado.csv"
 arquivo_saida_cliente = "data/dados_pacientes_cliente.csv"
 
