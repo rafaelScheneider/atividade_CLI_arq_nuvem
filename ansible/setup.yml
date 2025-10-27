@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    s3_bucket_name: "my-data-lake-bucket-example"
+    s3_bucket_name: "auto-bucket-healt-data-monitor"
 
   tasks:
     - name: Ensure Python 3 and pip are installed
@@ -22,4 +22,4 @@
         executable: pip3
 
     - name: Run the Python data cleaner
-      command: python3 /home/ec2-user/data_cleaner.py {{ s3_bucket_name }}
+      command: python3 /home/ubuntu/atividade_CLI_arq_nuvem/scripts/data_pipeline.py {{ s3_bucket_name }}

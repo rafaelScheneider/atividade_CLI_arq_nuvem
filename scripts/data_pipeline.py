@@ -5,10 +5,11 @@ import sys
 import os
 
 
-bucket_name = "auto-bucket-healt-data-monitor"
+if len(sys.argv) < 2:
+    print("Please provide the S3 bucket name as an argument on python command line")
+    sys.exit(1)
 
-if not bucket_name:
-    raise ValueError("Nome do bucket não foi passado!")
+bucket_name = sys.argv[1]
 
 s3 = boto3.client("s3")
 
