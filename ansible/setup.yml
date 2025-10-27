@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    s3_bucket_name: "auto-bucket-healt-data-monitor"
+    s3_bucket_name: "auto-bucket-health-data-monitor"
     venv_path: /home/ubuntu/data_cleaner_venv
 
   tasks:
