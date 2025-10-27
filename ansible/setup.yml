@@ -7,18 +7,23 @@
     s3_bucket_name: "auto-bucket-healt-data-monitor"
 
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
     - name: Ensure Python 3 and pip are installed
-      ansible.builtin.yum:
+      apt:
         name:
           - python3
           - python3-pip
         state: present
 
     - name: Install Python packages using pip
-      ansible.builtin.pip:
+      pip:
         name:
           - wfdb
           - pandas
+          - boto3
         executable: pip3
 
     - name: Run the Python data cleaner
