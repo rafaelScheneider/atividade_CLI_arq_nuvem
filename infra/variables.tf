@@ -2,7 +2,7 @@ variable "aws_region" {
  default = "us-east-1"
 }
 variable "bucket_name" {
-  default = "lab-sprint5-arqnuvem-rafael-scheneider"
+  default = "auto-bucket-healt-data-monitor"
 }
 
 resource "random_id" "suffix" {

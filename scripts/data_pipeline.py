@@ -1,28 +1,65 @@
-import boto3, pandas as pd, os
+import pandas as pd
+import boto3
+from io import StringIO
+import sys
+import os
 
-# Cria o diretório output
-os.makedirs("./output/", exist_ok=True)
 
-bucket = "lab-sprint5-arqnuvem-rafael-scheneider"
+bucket_name = "auto-bucket-healt-data-monitor"
+
+if not bucket_name:
+    raise ValueError("Nome do bucket não foi passado!")
+
 s3 = boto3.client("s3")
-local = "data/sales.csv"
 
-# RAW
-s3.upload_file(local, bucket, "raw/sales.csv")
+#raw data
+arquivo_entrada = "data/dados_pacientes.csv"
+arquivo_saida_tratado = "data/dados_pacientes_tratado.csv"
+arquivo_saida_cliente = "data/dados_pacientes_cliente.csv"
 
-# TRUSTED
-df = pd.read_csv(local).dropna()
-df.columns = [c.strip().lower().replace(" ", "_") for c in df.columns]
+df = pd.read_csv(arquivo_entrada)
 
-# Salva dentro de ./output/
-trusted_path = "./output/trusted_sales.csv"
-df.to_csv(trusted_path, index=False)
-s3.upload_file(trusted_path, bucket, "trusted/sales.csv")
 
-# CLIENT
-client = df[['order_id','amount']]
-client_path = "./output/client_sales.csv"
-client.to_csv(client_path, index=False)
-s3.upload_file(client_path, bucket, "client/sales.csv")
 
-print("Pipeline executado com sucesso!")
+#Data cleaning
+if "weight" in df.columns:
+    df.loc[(df["weight"] < 30) | (df["weight"] > 200), "weight"] = None
+if "height" in df.columns:
+    df.loc[(df["height"] < 100) | (df["height"] > 220), "height"] = None
+
+# Converter colunas de tempo
+colunas_tempo = ["casestart", "caseend", "anestart", "aneend", "opstart", "opend"]
+for col in colunas_tempo:
+    if col in df.columns:
+        df[col] = pd.to_timedelta(df[col], unit="s")
+
+# Duracoes em horas
+if {"casestart", "caseend"}.issubset(df.columns):
+    df["duracao_caso_horas"] = (df["caseend"] - df["casestart"]).dt.total_seconds() / 3600
+if {"anestart", "aneend"}.issubset(df.columns):
+    df["duracao_anestesia_horas"] = (df["aneend"] - df["anestart"]).dt.total_seconds() / 3600
+
+
+df.to_csv(arquivo_saida_tratado, index=False, encoding="utf-8-sig")
+print(f"✅ Arquivo tratado salvo localmente como: {arquivo_saida_tratado}")
+
+
+#/client
+df_cliente = df.copy()
+if "patient_id" in df_cliente.columns:
+    df_cliente = df_cliente.drop(columns=["patient_id"])
+
+df_cliente.to_csv(arquivo_saida_cliente, index=False, encoding="utf-8-sig")
+
+#Upload to S3
+def upload_to_s3(file_path, s3_key):
+    with open(file_path, "rb") as data:
+        s3.upload_fileobj(data, bucket_name, s3_key)
+    print(f"☁️  Uploaded to s3://{bucket_name}/{s3_key}")
+
+# Upload
+upload_to_s3(arquivo_entrada, f"raw/{arquivo_entrada}")
+upload_to_s3(arquivo_saida_tratado, f"trusted/{arquivo_saida_tratado}")
+upload_to_s3(arquivo_saida_cliente, f"client/{arquivo_saida_cliente}")
+
+print("Pipeline de dados concluído")
